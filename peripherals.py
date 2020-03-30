@@ -1,6 +1,6 @@
 import tkinter
 import random
-import emulator.messages as messages
+import armv2_emulator.messages as messages
 import string
 import struct
 import itertools
@@ -1534,7 +1534,9 @@ class EmulatorWrapper(object):
 
 def main():
     import pygame
-    import emulator
+    import armv2_emulator
+    import glob
+
     root = tkinter.Tk()
     root.wm_title('Rebellion')
     root.resizable(0,0)
@@ -1553,8 +1555,9 @@ def main():
             app.update()
             #os.environ['SDL_VIDEODRIVER'] = 'windib'
             emulator_wrapper.take_focus(1)
-            emulator.init(emulator_wrapper.width, emulator_wrapper.height)
-            machine = emulator.Emulator(boot_rom='emulator/build/boot.rom')
+            armv2_emulator.init(emulator_wrapper.width, emulator_wrapper.height)
+            machine = armv2_emulator.Emulator(boot_rom='armv2_emulator/build/boot.rom',
+                                              tapes=glob.glob('tapes/tapes/*.tape'))
             app.emulator = machine
             emulator_wrapper.register_emulator(machine)
             emulator_wrapper.register_app(app)

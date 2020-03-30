@@ -1,0 +1,3 @@
+[submodule "armv2"]
+	path = armv2_emulator
+	url = git@github.com:tompudding/armv2.git
