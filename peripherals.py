@@ -1475,7 +1475,10 @@ class EmulatorWrapper(object):
 
     def key_up(self, event):
         if self.locked:
-            self.emulator.key_up(event)
+            try:
+                self.emulator.key_up(ord(event.char))
+            except TypeError:
+                pass
         return 'break'
 
     def key_down(self, event):
@@ -1504,7 +1507,10 @@ class EmulatorWrapper(object):
 
     def handle_keydown(self, event):
         if self.locked:
-            return self.emulator.key_down(event)
+            try:
+                return self.emulator.key_down(ord(event.char))
+            except TypeError:
+                pass
 
     def tab(self, event):
         if self.locked:
