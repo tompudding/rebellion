@@ -1372,7 +1372,8 @@ class Application(tkinter.Frame):
         self.queue.put(messages.Disconnect())
 
     def send_message(self, message):
-        self.client.send(message)
+        if self.client:
+            self.client.send(message)
 
     def message_handler(self, message):
         if not self.dead:
@@ -1427,7 +1428,6 @@ def run():
                        highlightbackground='lawn green')
     app = Application(master=root)
     with messages.Client('localhost', 0x4141, callback=app.message_handler) as client:
-        print(client)
         app.init(client)
         app.mainloop()
     root.destroy()
@@ -1554,16 +1554,24 @@ def main():
     debugger.pack(side=tkinter.TOP)
 
     try:
-        with messages.Client('localhost', 0x4141, callback=app.message_handler) as client:
+
+        app.update()
+        armv2_emulator.init(emulator_wrapper.width, emulator_wrapper.height)
+        machine = armv2_emulator.Emulator(boot_rom='armv2_emulator/build/boot.rom',
+                                          tapes=glob.glob('tapes/tapes/*.tape'))
+        with messages.Client('localhost', machine.dbg.port, callback=app.message_handler) as client:
             print(client)
-            app.client = client
+
             #app.mainloop()
             app.update()
+            app.client = client
+
+            #app.update()
             #os.environ['SDL_VIDEODRIVER'] = 'windib'
+
             emulator_wrapper.take_focus(1)
-            armv2_emulator.init(emulator_wrapper.width, emulator_wrapper.height)
-            machine = armv2_emulator.Emulator(boot_rom='armv2_emulator/build/boot.rom',
-                                              tapes=glob.glob('tapes/tapes/*.tape'))
+
+
             app.emulator = machine
             emulator_wrapper.register_emulator(machine)
             emulator_wrapper.register_app(app)
