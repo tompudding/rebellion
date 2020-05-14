@@ -46,6 +46,9 @@ int load_with_progress_bar(char *title, size_t title_len, entry_t *entry) {
     result = tape_next_word( &section_length );
     section_length &= (~TAPE_FLAG_FINAL);
 
+    //Store a record of this tape for debuggers
+    add_loaded_tape(load_area, section_length);
+
     //Now we know the length we know how many bytes we need for each blip along the progress bar
     uint32_t bytes_per_blip = section_length / bar_width;
     uint32_t next_blip = bytes_per_blip;
@@ -59,7 +62,7 @@ int load_with_progress_bar(char *title, size_t title_len, entry_t *entry) {
             next_blip--;
 
             if(next_blip == 1) {
-                *bar_pos++ = '\x60';
+                *bar_pos++ = '\x40';
             }
             else if(next_blip == 0) {
                 //*bar_pos++ = '\x60';
